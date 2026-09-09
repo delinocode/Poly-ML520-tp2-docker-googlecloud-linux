@@ -1,0 +1,25 @@
+# Copy to /etc/systemd/system/inferapi.service on the VM, then:
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now inferapi
+#   journalctl -u inferapi -f
+#
+# A process you start by hand over SSH dies when the SSH session ends.
+# It also stays dead after a crash or a reboot.
+# This file exists so that systemd starts the service and keeps it running.
+
+[Unit]
+Description=inferapi - subscription prediction API
+# These two lines only set the start order. The service must still survive the network
+# going away for a moment.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# TODO(LAB): run the service as the mlops user from /opt/inferapi, load the token from
+#            a file systemd reads, start the service through scripts/entrypoint.sh, and
+#            bring it back when it dies.
+
+[Install]
+# This is necessary so that the service starts again after a reboot.
+WantedBy=multi-user.target

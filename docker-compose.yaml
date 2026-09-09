@@ -1,0 +1,33 @@
+name: inferapi
+
+# This file runs two containers on one network: the service, and a client that talks
+# to it.
+#
+#   docker compose up --build
+
+services:
+  # TODO(LAB): write the inferapi service. Make sure:
+  #    - Listens on port 8000, reachable from host
+  #    - Token comes from env
+  #    - Contains a healtcheck
+
+
+  # ----------------------------------------
+  loadgen:
+    image: python:3.12-slim
+    depends_on:
+      inferapi:
+        condition: service_healthy
+    environment:
+      TARGET_URL: http://inferapi:8000
+      ML520_SECURITY__API_TOKEN: ${ML520_SECURITY__API_TOKEN:?set it in .env}
+      PAYLOAD_GLOB: /app/scripts/payload*.json
+      DELAY_S: "0.5"
+    volumes:
+      - type: bind
+        source: scripts
+        target: /app/scripts
+        read_only: true
+        bind:
+          create_host_path: false
+    command: ["python", "/app/scripts/loadgen.py"]

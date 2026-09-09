@@ -1,0 +1,10 @@
+# Everything the daemon receives in the build context CAN end up in a layer.
+# Anyone who can pull the image can read every layer.
+#
+# NOTE(LAB): These are not _exactly_ .gitignore patterns
+#           Docker matches each one against the whole path.
+#           so `__pycache__/` catches only the directory at the root.
+#           Use `**/` to catch every depth.
+
+# TODO(LAB): keep the build context down to what the Dockerfile actually copies.
+#            Run `make docker-context` before and after writing this file.

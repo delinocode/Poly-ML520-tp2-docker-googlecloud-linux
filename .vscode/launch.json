@@ -1,0 +1,46 @@
+{
+  // Provided so that setting a breakpoint costs one keystroke and no configuration.
+  // Select .venv as your interpreter first (Python: Select Interpreter -> ./.venv).
+  // PyCharm users: the same four run configurations exist there, see TP1.md.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "inferapi: train",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "inferapi.cli",
+      "args": ["train", "--output", "out/models/model.joblib"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "inferapi: serve (uvicorn, no reload)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      // No --reload: the reloader runs your code in a child process the debugger
+      // is not attached to, and every breakpoint is silently ignored.
+      "args": ["inferapi.serve:app", "--port", "8000"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "pytest: current file",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["${file}", "-vv"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      // Start `make serve-debug` in a terminal first, then attach with this.
+      // Same mechanism you will use to debug a process inside a container.
+      "name": "inferapi: attach to make serve-debug",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": { "host": "localhost", "port": 5678 },
+      "pathMappings": [{ "localRoot": "${workspaceFolder}", "remoteRoot": "." }]
+    }
+  ]
+}

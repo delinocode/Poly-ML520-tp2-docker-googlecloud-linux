@@ -1,0 +1,21 @@
+{
+    "age": 75,
+    "job": "retired",
+    "marital": "married",
+    "education": "basic.4y",
+    "default": "no",
+    "housing": "no",
+    "loan": "no",
+    "contact": "cellular",
+    "month": "aug",
+    "day_of_week": "wed",
+    "campaign": 2,
+    "pdays": 6,
+    "previous": 3,
+    "poutcome": "success",
+    "emp_var_rate": -1.7,
+    "cons_price_idx": 94.027,
+    "cons_conf_idx": -38.3,
+    "euribor3m": 0.903,
+    "nr_employed": 4991.6
+}

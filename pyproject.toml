@@ -1,0 +1,89 @@
+[project]
+name = "inferapi"
+version = "0.1.0"
+description = "Subscription prediction API - ML520 running example, born in TP1."
+requires-python = ">=3.12"
+
+dependencies = [
+    "pandas>=2.2,<3",
+    "pyarrow>=17,<22",
+    "scikit-learn>=1.6,<2",
+    "joblib>=1.4,<2",
+    "fastapi>=0.115,<1",
+    "pydantic>=2.9,<3",
+    "pydantic-settings[yaml]>=2.8,<3",
+    "uvicorn>=0.34,<1",
+    "gunicorn>=23,<24; sys_platform != 'win32'",
+]
+
+# The one command line the project installs. `uv run inferapi train` beats
+# `python -m inferapi.train`: it is a name, not a module path, so the code can move.
+[project.scripts]
+inferapi = "inferapi.cli:main"
+
+# Extras ship with the project; an optional runtime accelerator belongs here,
+# not in a dev-only group. The markers restrict it to where wheels exist.
+[project.optional-dependencies]
+intelex = [
+    "scikit-learn-intelex>=2025.0,<2026; platform_machine == 'x86_64' or platform_machine == 'AMD64'",
+]
+# The torch backend is opt-in: `uv sync --extra model-torch`. Nothing in the default
+# install, the Docker image or the test suite needs it.
+model-torch = [
+    "torch>=2.4,<3",
+]
+
+# NOTE(TP): This sets the build of pytorch to CPU, you can remove it if you plan
+#           to train on GPU.
+#           Furthermore, you can't use environment markers for this, there is no
+#           environment marker for supporting GPU.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+
+# `uv sync` installs the `dev` group by default; anything else is opt-in
+# (uv sync --group <name>).
+[dependency-groups]
+dev = [
+    "pytest>=8,<9",
+    "httpx>=0.27,<1",
+    "ruff>=0.11,<1",
+    # The debug adapter every Python IDE speaks. Your editor bundles its own copy for
+    # local runs; this one is what `make serve-debug` starts, and what lets you attach
+    # to a process you did not launch from the editor - a server, later a container.
+    "debugpy>=1.8,<2",
+]
+notebooks = [
+    "jupyterlab>=4,<5",
+    "matplotlib>=3.9,<4",
+    "seaborn>=0.13,<0.14",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# hatchling finds src/inferapi on its own because it matches [project].name.
+
+[tool.ruff]
+line-length = 120
+extend-exclude = ["out"]
+
+[tool.ruff.lint]
+# E/F: pycodestyle + pyflakes (the baseline). I: import sorting.
+# UP: don't write Python 3.8 in a 3.12 project. B: bugbear's real-bug subset.
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+# joblib + numpy 2.5 emit one deprecation per array while unpickling a model, which
+# is thousands of lines for one `joblib.load`. Silenced narrowly, by message, so the
+# next deprecation still gets your attention. Drop this once joblib fixes it.
+filterwarnings = [
+    "ignore:Setting the shape on a NumPy array has been deprecated:DeprecationWarning",
+]

@@ -1,0 +1,35 @@
+# Non-secret configuration
+# This file is typically committed
+# There are NO SECRETS IN THIS FILE : maybe only _references_ to secrets
+# (more on this later)
+data:
+  csv_path: data/dataset.csv
+  parquet_path: data/dataset.parquet
+
+serving:
+  model_path: out/models/model.joblib
+  prediction_threshold: 0.5
+  # Put this to 0 to disable the "busy loop" which makes computing slower
+  # NOTE(LAB): We will use this in later labs
+  simulate_work_ms: 0
+
+# When training, it is necessary to keep a copy of our params
+training:
+  n_estimators: 100
+  max_depth: 8
+  test_size: 0.2
+  val_size: 0.2
+  seed: 0
+  # NOTE(LAB): You'd typically choose this within training, set here for simplicity
+  # Keep this equal to serving.prediction_threshold, or the precision you report is
+  # not the precision your users get.
+  decision_threshold: 0.5
+
+security:
+  # NOTE(LAB): Notice the token is not set here
+  # Practical tip: Security toggles should be set to the most secure by default
+  enable_api_key_check: true
+
+logging:
+  # Verbosity of STDOUT handler
+  level: INFO
