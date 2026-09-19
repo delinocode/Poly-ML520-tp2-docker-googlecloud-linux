@@ -20,8 +20,8 @@ BIND_ADDR ?= 127.0.0.1
 PORT ?= 8000
 
 # TODO(LAB): Write your project ID here below and export the command
-#   export GCP_PROJECT=<your-project-id>
-GCP_PROJECT ?= project-6c498b27-44e1-48bf-b6f
+#   export GCP_PROJECT= tp2-group-u
+GCP_PROJECT ?= tp2-group-u
 GCP_REGION ?= northamerica-northeast1
 GCP_ZONE ?= $(GCP_REGION)-b
 AR_REPO ?= ml520
@@ -123,7 +123,7 @@ serve-entrypoint:  ## Start the service the way systemd and the container do
 #########################################
 .PHONY: check-project check-ssh-config gcp-bootstrap vm-create vm-ssh-config vm-setup vm-sync vm-ssh vm-forward vm-stop vm-start vm-delete
 
-# 
+#
 # NOTE(LAB): `gcloud compute config-ssh` writes an entry into your ~/.ssh/config.
 #			  Use that host to connect to the VM
 VM_HOST ?= $(VM_NAME).$(GCP_ZONE).$(GCP_PROJECT)
