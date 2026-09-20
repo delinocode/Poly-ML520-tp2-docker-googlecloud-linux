@@ -11,6 +11,9 @@
 /data
 /out
 
+## Personal guide (do not commit)
+GUIDE-ORDRE-EXECUTION.md
+
 ## Model artifacts
 *.joblib
 *.pkl

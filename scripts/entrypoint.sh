@@ -16,7 +16,6 @@ BIND_ADDR="${BIND_ADDR:-0.0.0.0}"
 WORKERS="${WORKERS:-2}"
 MODEL_PATH="${ML520_SERVING__MODEL_PATH:-out/models/model.joblib}"
 
-
 # NOTE(LAB): This would be done anyway with pydantic-settings, but just roll with it :)
 require_token() {
     # TODO(LAB): refuse to start when ML520_SECURITY__API_TOKEN is empty or unset.
@@ -36,3 +35,7 @@ require_model
 
 # TODO(LAB): start gunicorn with `exec`, binding to ${BIND_ADDR}:${PORT} with
 #            $WORKERS uvicorn workers. `make serve` shows the flags.
+exec .venv/bin/gunicorn --workers "$WORKERS" \
+    --worker-class uvicorn.workers.UvicornWorker \
+    --bind "${BIND_ADDR}:${PORT}" \
+    inferapi.serve:app
