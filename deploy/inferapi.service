@@ -19,6 +19,12 @@ Type=simple
 # TODO(LAB): run the service as the mlops user from /opt/inferapi, load the token from
 #            a file systemd reads, start the service through scripts/entrypoint.sh, and
 #            bring it back when it dies.
+User=mlops
+Group=mlops
+WorkingDirectory=/opt/inferapi
+EnvironmentFile=/opt/inferapi/.env
+ExecStart=/opt/inferapi/scripts/entrypoint.sh
+Restart=on-failure
 
 [Install]
 # This is necessary so that the service starts again after a reboot.
