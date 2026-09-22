@@ -11,9 +11,18 @@ WORKDIR /app
 # TODO(LAB): install the dependencies from the lock file.
 #            Dev-only dependencies have should not be in a production image
 
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
+
 # TODO(LAB): copy in what the service needs at runtime: the code, the configuration,
 #            the entrypoint and the trained model.
 
+COPY src/ src/
+COPY configs/ configs/
+COPY scripts/entrypoint.sh scripts/
+COPY out/models/model.joblib out/models/
+RUN uv sync --frozen --no-dev
+RUN chmod +x scripts/entrypoint.sh
 
 EXPOSE 8000
 

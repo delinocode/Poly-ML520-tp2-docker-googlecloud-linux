@@ -8,3 +8,6 @@
 
 # TODO(LAB): keep the build context down to what the Dockerfile actually copies.
 #            Run `make docker-context` before and after writing this file.
+.env
+.venv/
+data/

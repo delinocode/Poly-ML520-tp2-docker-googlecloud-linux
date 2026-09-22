@@ -37,13 +37,17 @@ Ce qui permet de relancer le service apres un redemarrage
 
 Nommez trois choses que vous avez exclues dans votre .dockerignore et le pourquoi
 
-> Votre réponse ici.
+.env car on ne veut partager notre token API et donc ce risquer a avoir des utilisations non desirer
+
+.venv est trop lourd et de tout maniere il sera generer automatique par uv sync
+
+data/ on charge le model deja entrainer sur les data , pas besoin du dataset
 
 <hr>
 
 Dans le `Dockerfile`, `uv.lock` est copié **avant** `src/`. Expliquez pourquoi.
 
-> Votre réponse ici.
+Chaque COPY crée une couche, et Docker garde ces couches en cache. On copie uv.lock avant src/ parce qu’il change rarement. Ainsi, si je modifie seulement src/, Docker peut réutiliser la couche de uv sync. Si src/ était copié avant, chaque modification du code pourrait obliger Docker à reconstruire les couches suivantes.
 
 ## Question 3 - L'artefact et les logs
 
@@ -51,7 +55,9 @@ Le modèle est présentement copié dans l'image, donc l'étiquette de l'image n
 
 Quel est l'avantage à l'exécution, et à partir de quelle taille d'artefact vous choisiriez plutôt de le télécharger au démarrage ?
 
-> Votre réponse ici.
+L'image inclut le modèle et le code : pas besoin d'internet pour démarrer le conteneur, on connaît toujours les versions utilisées (le tag `0.2.0` représente le modèle et le code).
+
+Notre modèle ne fait que 2,3 Mo, donc le laisser dans l'image est plus simple et reproductible. À partir de quelques centaines de Mo, on l'exclurait de l'image : on monterait le modèle comme volume, ou on le chargerait au démarrage via `joblib.load()`.
 
 <hr>
 
@@ -59,11 +65,11 @@ Le conteneur écrit dans ce qu'il voit être `out/logs/app.log`
 
 Où sont allés ces logs: qu'arrive-t-il du fichier quand le conteneur est supprimé ?
 
-> Votre réponse ici.
+Ces logs restent dans la couche writable du conteneur. Si le conteneur est détruit ou recréé, ils disparaissent : on ne retrouve ces fichiers que si on les place en volume monté.
 
 Qu'est-ce que `docker compose logs` donne à la place en comparaison aux logs écrits dans `out/logs/app.log`.
 
-> Votre réponse ici.
+docker compose logs donne les mêmes messages que out/logs/app.log, à une différence près : les messages écrits dans out/logs/app.log disparaissent à chaque recréation du conteneur (puisque la couche writable est détruite), tandis que Docker conserve la copie de la sortie standard (stdout).
 
 ## Question 4 - Compose sur la VM
 
@@ -76,4 +82,4 @@ Qu'est-ce que `docker compose logs` donne à la place en comparaison aux logs é
 `loadgen` joint le service par `http://inferapi:8000`, sans qu'aucun port ne soit publié entre les deux.
 Qu'est-ce qui résout ce nom, et pourquoi une adresse IP serait un mauvais choix ici ?
 
-> Votre réponse ici.
+http://inferapi:8000 fonctionne parce que Docker fournit un serveur DNS pour ses réseaux privés. Chaque conteneur devient joignable par le nom de son service. Une adresse IP aurait été un mauvais choix, parce que les IP internes sont éphémères et changent à chaque redémarrage ou recréation du conteneur. Le nom de service, lui, reste toujours le même.

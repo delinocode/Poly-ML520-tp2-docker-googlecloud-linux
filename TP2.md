@@ -14,15 +14,15 @@
 
 Le TP1 vous a donné du code qui roule sur votre machine.
 Le TP2 le fait rouler ailleurs de deux façons:
-  1. En roulant sur la VM avec systemd
-  2. En roulant un conteneur sur la VM
+
+1. En roulant sur la VM avec systemd
+2. En roulant un conteneur sur la VM
 
 D'abord sur une VM que vous provisionnez vous-même: vous y copiez ce qu'il faut, vous le démarrez avec un script d'entrée et vous laissez systemd faire l'orchestration.
 C'est ainsi qu'on déployait avant les conteneurs (et aussi d'autres services non conteneurisés)
 
 Puis on roule avec des _containers_: vous construisez l'image une fois sur votre portable + vous la poussez dans un _registry_: Artifact Registry.
 La VM _pull_ cette image.
-
 
 ## Prérequis
 
@@ -39,13 +39,13 @@ La VM _pull_ cette image.
 
 Cinq fichiers sont à compléter, chacun avec ses commentaires `# TODO(LAB)`:
 
-| Fichier | Tâche |
-|---|---|
-| `scripts/entrypoint.sh` | [B](#tâche-b---le-script-de-démarrage) |
-| `deploy/inferapi.service` | [C](#tâche-c---le-service-systemd) |
-| `Dockerfile` | [E](#tâche-e---limage) |
-| `.dockerignore` | [E](#tâche-e---limage) |
-| `docker-compose.yaml` | [F](#tâche-f---docker-compose-sur-la-vm) |
+| Fichier                   | Tâche                                    |
+| ------------------------- | ---------------------------------------- |
+| `scripts/entrypoint.sh`   | [B](#tâche-b---le-script-de-démarrage)   |
+| `deploy/inferapi.service` | [C](#tâche-c---le-service-systemd)       |
+| `Dockerfile`              | [E](#tâche-e---limage)                   |
+| `.dockerignore`           | [E](#tâche-e---limage)                   |
+| `docker-compose.yaml`     | [F](#tâche-f---docker-compose-sur-la-vm) |
 
 Le reste du TP consiste à faire tourner tout ça et à répondre aux questions dans
 [`reports/tp2.md`](./reports/tp2.md).
@@ -78,32 +78,29 @@ make compose-logs
 
 ### Tâche A - Mettre votre VM en place
 
-
-
 1. Créer la VM avec `make vm-create` (ou manuellement si vous êtes brave).
-    - N.B.: l'adresse IP est **éphémère** et changera probablement à chaque
-      arrêt/démarrage.
-    - N.B.: La VM est démarrée lorsqu'elle est créée
+   - N.B.: l'adresse IP est **éphémère** et changera probablement à chaque
+     arrêt/démarrage.
+   - N.B.: La VM est démarrée lorsqu'elle est créée
 1. Configurer SSH avec `make vm-ssh-config`. Ceci fait:
-    - la création de l'utilisateur `mlops` sur la VM;
-    - une entrée dans votre `~/.ssh/config`.
+   - la création de l'utilisateur `mlops` sur la VM;
+   - une entrée dans votre `~/.ssh/config`.
 1. Ouvrez `~/.ssh/config` et lisez l'entrée.
-    - Notez que vous pouvez maintenant utiliser `ssh`, `scp`, `rsync` et l'extension
-      `Remote-SSH`.
-    - Étant donné que l'adresse IP est éphémère, `make vm-start` va réécrire l'entrée de SSH config.
+   - Notez que vous pouvez maintenant utiliser `ssh`, `scp`, `rsync` et l'extension
+     `Remote-SSH`.
+   - Étant donné que l'adresse IP est éphémère, `make vm-start` va réécrire l'entrée de SSH config.
 1. Rouler `make vm-setup`, qui va:
-    - installer docker, uv, rsync, screen et make;
-    - créer `/opt/inferapi` et mettre les bonnes permissions dessus.
+   - installer docker, uv, rsync, screen et make;
+   - créer `/opt/inferapi` et mettre les bonnes permissions dessus.
 1. Rouler `make vm-sync`, qui copie le projet dans `/opt/inferapi`.
-    - Lisez `scripts/vm_sync.sh`. Ce qui voyage y est décidé ligne par ligne, et
-      `rsync` ne lit pas votre `.gitignore`.
+   - Lisez `scripts/vm_sync.sh`. Ce qui voyage y est décidé ligne par ligne, et
+     `rsync` ne lit pas votre `.gitignore`.
 1. Sur la VM, dans `/opt/inferapi`: `uv sync`, écrivez le `.env` à la main, puis
    `make model-train`.
 1. Regardez où vous êtes: `nproc`, `free -h`, `df -h`, `ps aux`.
 1. `make vm-stop` dès que vous arrêtez de travailler.
 
 Site web de GCP: [https://console.cloud.google.com/](https://console.cloud.google.com/)
-
 
 **ATTENTION POUR LA REMISE: Ce que vous modifiez sur la VM doit revenir sur votre portable pour être commité!**
 `rsync` marche dans les deux sens. (Vous pouvez aussi faire copier+coller)
@@ -123,7 +120,8 @@ Testez avec `make serve-entrypoint`.
 But: Avoir l'API de inferapi qui roule avec `systemd`.
 
 Complétez `deploy/inferapi.service`.
-Le service doit: 
+Le service doit:
+
 1. rouler comme `mlops`
 1. rouler depuis `/opt/inferapi`
 1. démarrer par `scripts/entrypoint.sh`
@@ -156,12 +154,6 @@ Cependant on peut utiliser les tunnels SSH pour ceci:
 Depuis votre portable: `make vm-forward`, puis `http://localhost:8000/healthz`.
 
 Le pare-feu n'ouvre pas le port 8000 en entrée; le trafic passe dans le tunnel SSH (donc le port 22, qui lui est ouvert).
-
-
-
-
-
-
 
 ### Tâche D - Lancer des travaux et y revenir après déconnexion
 
@@ -248,8 +240,8 @@ Vérifiez un `/v1/predict` authentifié, puis regardez `docker compose logs load
 - Le rapport est commité dans `reports/tp2.md`, avec les captures dans `reports/img/`.
 - Tout le travail est commité, puis empaqueté avec `make submit TEAM=<numéro>`, qui
   produit `out/tp2_team_<numéro>.bundle`.
-    - Sans `make`: `git bundle create "out/tp2_team_REPLACEME.bundle" --all`
-    - **NE PAS OUBLIE DE RAPATRIER LES FICHIERS DE VOTRE VM DANS VOTRE DOSSIER LOCAL: ex: le `inferapi.service` après avoir fait toutes les modifications.**
+  - Sans `make`: `git bundle create "out/tp2_team_REPLACEME.bundle" --all`
+  - **NE PAS OUBLIE DE RAPATRIER LES FICHIERS DE VOTRE VM DANS VOTRE DOSSIER LOCAL: ex: le `inferapi.service` après avoir fait toutes les modifications.**
 - Remettez le `.bundle` sur Moodle. Il contient tout l'historique.
 - **Détruisez la VM (et les disques)** avec `make vm-delete` (ou depuis l'interface web)
   une fois le TP remis. Gardez le projet!
@@ -257,25 +249,25 @@ Vérifiez un `/v1/predict` authentifié, puis regardez `docker compose logs load
 ## Critères d'évaluation
 
 - (15 pts) Le script de démarrage
-    - Les deux vérifications présentes et fonctionnelles
-    - gunicorn démarré avec `exec` et les bonnes options
+  - Les deux vérifications présentes et fonctionnelles
+  - gunicorn démarré avec `exec` et les bonnes options
 - (15 pts) Le service systemd
-    - L'unité est bien écrite
-    - L'unité démarre le service par `entrypoint.sh`, lit le jeton depuis un fichier d'environnement et redémarre quand il meurt.
+  - L'unité est bien écrite
+  - L'unité démarre le service par `entrypoint.sh`, lit le jeton depuis un fichier d'environnement et redémarre quand il meurt.
 - (20 pts) L'image docker
-    - Le Dockerfile est bien écrit:
-        - Dépendances installées depuis le fichier de verrouillage, sans les dépendances de développement.
-        - Les instructions sont ordonnées pour que le cache serve, et l'image contient le modèle.
+  - Le Dockerfile est bien écrit:
+    - Dépendances installées depuis le fichier de verrouillage, sans les dépendances de développement.
+    - Les instructions sont ordonnées pour que le cache serve, et l'image contient le modèle.
 - (10 pts) Le contexte de build
-    - `.dockerignore` qui exclut le dépôt git, l'environnement virtuel, le dataset et surtout le `.env`.
+  - `.dockerignore` qui exclut le dépôt git, l'environnement virtuel, le dataset et surtout le `.env`.
 - (20 pts) Compose, et l'image sur la VM
-    - Le service `inferapi` porte le nom de l'image poussée, avec une étiquette de version, et la VM tire cette image-là.
-    - Le jeton arrive par l'environnement, et le `healthcheck` teste depuis l'intérieur du conteneur.
-    - La capture de la console Artifact Registry est au rapport.
+  - Le service `inferapi` porte le nom de l'image poussée, avec une étiquette de version, et la VM tire cette image-là.
+  - Le jeton arrive par l'environnement, et le `healthcheck` teste depuis l'intérieur du conteneur.
+  - La capture de la console Artifact Registry est au rapport.
 - Critères globaux
-    - `make tests` et `make code-quality` passent toujours.
-    - Il ne reste pas de `TODO(LAB)`.
+  - `make tests` et `make code-quality` passent toujours.
+  - Il ne reste pas de `TODO(LAB)`.
 - (0 à -20 pts) Critères de remise
-    - Une remise qui ne respecte pas les [critères de remise](#critères-de-remise) s'expose à une pénalité négative.
+  - Une remise qui ne respecte pas les [critères de remise](#critères-de-remise) s'expose à une pénalité négative.
 - (20 pts) Réponses aux questions
-    - Réponses claires et argumentées, captures d'écran lisibles.
+  - Réponses claires et argumentées, captures d'écran lisibles.

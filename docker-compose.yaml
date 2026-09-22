@@ -10,7 +10,25 @@ services:
   #    - Listens on port 8000, reachable from host
   #    - Token comes from env
   #    - Contains a healtcheck
-
+  inferapi:
+    image: northamerica-northeast1-docker.pkg.dev/tp2-group-u/ml520/inferapi:0.2.0
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz', timeout=3)",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
 
   # ----------------------------------------
   loadgen:

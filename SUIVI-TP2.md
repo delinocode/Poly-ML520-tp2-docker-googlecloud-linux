@@ -1,5 +1,12 @@
 # Suivi TP2 — checklist
 
+> **⚠️ Consigne de référence.** Ce document n'est **pas** un document du prof et ne doit
+> **pas** être pris comme référence. C'est uniquement un **calepin de suivi de notre
+> avancement** (aide-mémoire). **Toute information ou tâche doit être explicitement
+> lue et résolue à partir de `TP2.md`** (et, pour les questions, du document
+> `reports/tp2.md` qui en découle). Ne jamais inférer une tâche d'une ligne de ce
+> fichier : si ce n'est pas dans `TP2.md`, on ne le fait pas.
+
 Règle : on coche au fur et à mesure, on suit `TP2.md` à la lettre.
 
 ## Tâche A — Config GCP + VM
@@ -54,7 +61,7 @@ Règle : on coche au fur et à mesure, on suit `TP2.md` à la lettre.
 
 ## Rendu
 
-1. **Édite `reports/tp2.md`** (laptop) → **phrase** : réponses du document `GUIDE-ORDRE-EXECUTION.md` + tes captures dans `reports/img/`.
+1. **Édite `reports/tp2.md`** (laptop) → **phrase** : réponses aux questions du rapport, d'après `TP2.md` (⚠️ _pas_ un quelconque `GUIDE-ORDRE-EXECUTION.md` — ce fichier n'existe pas dans `TP2.md` ; ne pas inventer de source) + tes captures dans `reports/img/`.
 2. **Copie les fichiers édités sur la VM** (Étapes 5→9 : `scripts/entrypoint.sh`, `deploy/inferapi.service`, `docker-compose.yaml`, requête dans `test-requests/`, `.joblib` entraîné **au laptop**) → **phrase** : `vm_sync.sh` ignore `out/`, `scripts/`, `reports/` et `.env` — copie-les **à la main** — puis `git add`/`git commit` tes fichiers à toi. **Jamais** `.env`/token dans le bundle : l'archive `.bundle` contient **tout** l'historique git.
 3. `make submit TEAM=<numéro binôme>` → **phrase** : dépose `tp2_starter.bundle` dans Moodle.
 4. **Enfin seulement** : `make vm-delete` → **phrase** : ne supprime **pas** le disque persistant 30 GB (à vérifier dans l'interface web), et **éteins** la VM entre les sessions.
