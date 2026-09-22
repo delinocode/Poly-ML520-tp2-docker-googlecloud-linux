@@ -22,7 +22,7 @@ require_token() {
     #            The message must name the variable: whoever reads it is looking at
     #            `journalctl` output, not at this file.
     if [[ -z "${ML520_SECURITY__API_TOKEN:-}" ]]; then
-        echo "… : refuse to start when ML520_SECURITY__API_TOKEN is empty or unset" >&2
+        echo "ERROR: ML520_SECURITY__API_TOKEN is not set. Refusing to start." >&2
         return 1
     fi
 }
@@ -31,7 +31,7 @@ require_token() {
 require_model() {
     # TODO(LAB): refuse to start when the model artifact is not where MODEL_PATH says.
     if [[ ! -f "$MODEL_PATH" ]]; then
-        echo "…: refuse to start when the model artifact is not where MODEL_PATH says" >&2
+        echo "ERROR: model artifact not found at MODEL_PATH=${MODEL_PATH}. Refusing to start." >&2
         return 1
     fi
 }
